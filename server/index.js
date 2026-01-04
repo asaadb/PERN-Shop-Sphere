@@ -7,6 +7,7 @@ const app = express();
 //Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.static('public')); // This serves static files from the 'public' directory so that you can serve images
 
 // Test route
 app.get('/', (req, res) => {
