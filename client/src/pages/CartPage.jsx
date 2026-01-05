@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
-import { fetchCart } from '../services/api';
+import { fetchCart, updateCartItem } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
 function CartPage() {
   const { sessionId, cartItems, dispatch, cartCount } = useCart();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(null);
 
   useEffect(() => {
     if (sessionId) {
@@ -22,6 +23,32 @@ function CartPage() {
     }
   }, [sessionId, dispatch]);
 
+  const handleUpdateQuantity = async (itemId, newQuantity, maxStock) => {
+    // Validate quantity
+    if (newQuantity < 1) {
+      alert('Quantity must be at least 1');
+      return;
+    }
+
+    if (newQuantity > maxStock) {
+      alert(`Only ${maxStock} items available in stock`);
+      return;
+    }
+
+    setUpdating(itemId);
+    try {
+      await updateCartItem(itemId, newQuantity);
+      dispatch({
+        type: 'UPDATE_ITEM',
+        payload: { id: itemId, quantity: newQuantity },
+      });
+    } catch (error) {
+      console.log('Error updating cart item:', error);
+      alert('Failed to update quantity');
+    } finally {
+      setUpdating(null);
+    }
+  };
   const calculateTotal = () => {
     return cartItems
       .reduce(
@@ -75,7 +102,24 @@ function CartPage() {
                 <p className="text-sm text-gray-500">
                   Stock: {item.stock_quantity}
                 </p>
-                <p className="text-sm mt-2">Quantity: {item.quantity}</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <label className="text-sm">Qty:</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max={item.stock_quantity}
+                    value={item.quantity}
+                    onChange={(e) =>
+                      handleUpdateQuantity(
+                        item.id,
+                        parseInt(e.target.value) || 1,
+                        item.stock_quantity
+                      )
+                    }
+                    disabled={updating === item.id}
+                    className="w-16 border border-gray-300 rounded px-2 py-1"
+                  />
+                </div>
               </div>
 
               <div className="text-right">
