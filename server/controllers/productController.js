@@ -47,8 +47,31 @@ const createProduct = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+//Update product
+const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, price, category_id, stock_quantity, image_url } =
+      req.body;
+
+    const result = await pool.query(
+      'UPDATE products SET name = $1, description = $2, price = $3, category_id = $4, stock_quantity = $5, image_url = $6, updated_at = CURRENT_TIMESTAMP WHERE id = $7 RETURNING *',
+      [name, description, price, category_id, stock_quantity, image_url, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 module.exports = {
   getAllProducts,
   getProductById,
   createProduct,
+  updateProduct,
 };

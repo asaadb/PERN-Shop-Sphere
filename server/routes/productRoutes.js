@@ -4,6 +4,7 @@ const {
   getAllProducts,
   getProductById,
   createProduct,
+  updateProduct,
 } = require('../controllers/productController');
 
 // Route to get all products
@@ -14,5 +15,8 @@ router.get('/:id', getProductById);
 
 //Post route to create a new product
 router.post('/', createProduct);
+
+//Put route to update a product
+router.put('/:id', updateProduct);
 
 module.exports = router;
