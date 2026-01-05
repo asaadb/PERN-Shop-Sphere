@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   getAllProducts,
   getProductById,
+  createProduct,
 } = require('../controllers/productController');
 
 // Route to get all products
@@ -10,5 +11,8 @@ router.get('/', getAllProducts);
 
 // Route to get a single product by ID
 router.get('/:id', getProductById);
+
+//Post route to create a new product
+router.post('/', createProduct);
 
 module.exports = router;
