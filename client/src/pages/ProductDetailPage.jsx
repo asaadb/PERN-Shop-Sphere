@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchProductById } from '../services/api';
+import { fetchProductById, addToCart } from '../services/api';
+import { useCart } from '../context/CartContext';
 
 function ProductDetailPage() {
   const { id } = useParams();
@@ -8,6 +9,10 @@ function ProductDetailPage() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const { sessionId, dispatch } = useCart();
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     fetchProductById(id)
@@ -37,6 +42,36 @@ function ProductDetailPage() {
     );
   }
 
+  const handleAddToCart = async () => {
+    if (!sessionId) return;
+
+    // Validate quantity
+    if (quantity < 1) {
+      alert('Quantity must be at least 1');
+      return;
+    }
+
+    if (quantity > product.stock_quantity) {
+      alert(`Only ${product.stock_quantity} items available in stock`);
+      setQuantity(product.stock_quantity);
+      return;
+    }
+
+    setAddingToCart(true);
+    try {
+      await addToCart(sessionId, product.id, quantity);
+      dispatch({
+        type: 'ADD_ITEM',
+        payload: { product_id: product.id, quantity },
+      });
+      alert('Product added to cart!');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert('Failed to add product to cart.');
+    } finally {
+      setAddingToCart(false);
+    }
+  };
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <button
@@ -82,11 +117,28 @@ function ProductDetailPage() {
             </p>
           </div>
 
+          <div className="flex gap-4 items-center mb-4">
+            <label className="text-sm font-medium">Quantity:</label>
+            <input
+              type="number"
+              min="1"
+              max={product.stock_quantity}
+              value={quantity}
+              onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+              className="w-20 border border-gray-300 rounded px-3 py-2"
+            />
+          </div>
+
           <button
-            className="w-full bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 transition-colors font-medium"
-            disabled={product.stock_quantity === 0}
+            onClick={handleAddToCart}
+            className="w-full bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 transition-colors font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+            disabled={product.stock_quantity === 0 || addingToCart}
           >
-            {product.stock_quantity > 0 ? 'Add to Cart' : 'Out of Stock'}
+            {addingToCart
+              ? 'Adding...'
+              : product.stock_quantity > 0
+              ? 'Add to Cart'
+              : 'Out of Stock'}
           </button>
         </div>
       </div>
