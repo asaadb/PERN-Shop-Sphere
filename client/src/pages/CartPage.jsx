@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
-import { fetchCart, updateCartItem } from '../services/api';
+import { fetchCart, updateCartItem, removeFromCart } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
 function CartPage() {
@@ -58,6 +58,18 @@ function CartPage() {
       .toFixed(2);
   };
 
+  const handleRemove = async (itemId) => {
+    setUpdating(itemId);
+    try {
+      await removeFromCart(itemId);
+      dispatch({ type: 'REMOVE_ITEM', payload: itemId });
+    } catch (error) {
+      alert('Failed to remove item');
+      console.error('Error removing cart item:', error);
+    } finally {
+      setUpdating(null);
+    }
+  };
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -119,6 +131,13 @@ function CartPage() {
                     disabled={updating === item.id}
                     className="w-16 border border-gray-300 rounded px-2 py-1"
                   />
+                  <button
+                    onClick={() => handleRemove(item.id)}
+                    disabled={updating === item.id}
+                    className="text-red-600 hover:text-red-800 text-sm ml-r"
+                  >
+                    Remove
+                  </button>
                 </div>
               </div>
 
