@@ -1,13 +1,17 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+const productRoutes = require('./routes/productRoutes');
 
 const app = express();
 
 //Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public')); // This serves static files from the 'public' directory so that you can serve images
+app.use(express.static('public'));
+
+// Routes
+app.use('/api/products', productRoutes);
 
 // Test route
 app.get('/', (req, res) => {
