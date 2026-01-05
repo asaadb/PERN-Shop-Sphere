@@ -54,7 +54,29 @@ const addToCart = async (req, res) => {
   }
 };
 
+// Update cart item quantity
+const updateCartItem = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { quantity } = req.body;
+    if (!quantity || quantity < 1) {
+      return res.status(400).json({ error: 'Valid quantity is required' });
+    }
+    const result = await pool.query(
+      'UPDATE cart_items SET quantity = $1 WHERE id = $2 RETURNING *',
+      [quantity, id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Cart item not found' });
+    }
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update cart item' });
+  }
+};
+
 module.exports = {
   getCart,
   addToCart,
+  updateCartItem,
 };
