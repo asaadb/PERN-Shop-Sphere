@@ -1,6 +1,8 @@
+import { Link } from 'react-router-dom';
+
 function ProductCard({ product }) {
   return (
-    <div className="group cursor-pointer">
+    <Link to={`/products/${product.id}`} className="group cursor-pointer">
       <div className="aspect-square w-full rounded-lg bg-gray-200 overflow-hidden">
         <div className="h-full w-full flex items-center justify-center bg-gray-100">
           <span className="text-gray-400 text-sm">No Image Available</span>
@@ -18,7 +20,7 @@ function ProductCard({ product }) {
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
