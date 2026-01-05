@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.static('public'));
 // Routes
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/cart', cartRoutes);
 
 // Test route
 app.get('/', (req, res) => {
