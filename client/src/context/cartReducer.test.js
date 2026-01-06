@@ -69,3 +69,16 @@ it('should increase quantity when adding an existing item', () => {
   expect(newState).toHaveLength(1);
   expect(newState[0].quantity).toBe(5);
 });
+
+it('should return the current state for unknown action types', () => {
+  const initialState = [
+    { id: 1, product_id: 1, name: 'Test Product', quantity: 2 },
+  ];
+  const action = {
+    type: 'UNKNOWN_ACTION',
+    payload: { id: 1 },
+  };
+  const newState = cartReducer(initialState, action);
+
+  expect(newState).toEqual(initialState);
+});
