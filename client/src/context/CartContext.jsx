@@ -1,5 +1,6 @@
+import { useEffect } from 'react';
 import { createContext, useContext, useReducer, useState } from 'react';
-
+import { fetchCart } from '../services/api';
 const CartContext = createContext();
 
 export const useCart = () => {
@@ -58,6 +59,18 @@ export const CartProvider = ({ children }) => {
   });
 
   const [cartItems, dispatch] = useReducer(cartReducer, []);
+
+  useEffect(() => {
+    if (sessionId) {
+      fetchCart(sessionId)
+        .then((data) => {
+          dispatch({ type: 'SET_CART', payload: data });
+        })
+        .catch((err) => {
+          console.error('Error fetching cart:', err);
+        });
+    }
+  }, [sessionId]);
 
   // Calculate total cart count (derived state)
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
