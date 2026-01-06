@@ -27,3 +27,18 @@ it('should update the quantity of an existing item', () => {
   expect(newState[0].quantity).toBe(5);
 });
 
+it('should remove an item from the cart', () => {
+  const initialState = [
+    { id: 1, product_id: 1, name: 'Test Product', quantity: 2 },
+    { id: 2, product_id: 2, name: 'Another Product', quantity: 1 }
+  ];
+  const action = {
+    type: 'REMOVE_ITEM',
+    payload: 1 // id of the item to remove
+  };
+  const newState = cartReducer(initialState, action);
+
+  expect(newState).toHaveLength(1);
+  expect(newState[0].id).toBe(2);
+  expect(newState[0].name).toBe('Another Product');
+});
