@@ -55,3 +55,17 @@ it('should clear all items from the cart', () => {
 
   expect(newState).toHaveLength(0);
 });
+
+it('should increase quantity when adding an existing item', () => {
+  const initialState = [
+    { id: 1, product_id: 1, name: 'Test Product', quantity: 2 },
+  ];
+  const action = {
+    type: 'ADD_ITEM',
+    payload: { id: 1, product_id: 1, name: 'Test Product', quantity: 3 },
+  };
+  const newState = cartReducer(initialState, action);
+
+  expect(newState).toHaveLength(1);
+  expect(newState[0].quantity).toBe(5);
+});
