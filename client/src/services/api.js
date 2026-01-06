@@ -1,3 +1,18 @@
+// Clear all items from cart for a session
+export const clearCart = async (sessionId) => {
+  try {
+    const response = await fetch(`${API_URL}/cart?session_id=${sessionId}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to clear cart');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error clearing cart:', error);
+    throw error;
+  }
+};
 const API_URL = 'http://localhost:5001/api';
 
 // Fetch all products

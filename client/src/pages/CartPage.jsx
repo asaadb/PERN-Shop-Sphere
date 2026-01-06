@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
-import { fetchCart, updateCartItem, removeFromCart } from '../services/api';
+import {
+  fetchCart,
+  updateCartItem,
+  removeFromCart,
+  clearCart,
+} from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
 function CartPage() {
@@ -68,6 +73,16 @@ function CartPage() {
       console.error('Error removing cart item:', error);
     } finally {
       setUpdating(null);
+    }
+  };
+
+  const handleClearCart = async () => {
+    try {
+      await clearCart(sessionId);
+      dispatch({ type: 'CLEAR_CART' });
+    } catch (error) {
+      alert('Failed to clear cart');
+      console.error('Error clearing cart:', error);
     }
   };
   if (loading) {
@@ -175,6 +190,13 @@ function CartPage() {
 
             <button className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 font-medium mb-2">
               Proceed to Checkout
+            </button>
+
+            <button
+              onClick={handleClearCart}
+              className="w-full bg-red-600 text-white py-3 rounded-md hover:bg-red-700 font-medium mb-2"
+            >
+              Clear Cart
             </button>
 
             <button
