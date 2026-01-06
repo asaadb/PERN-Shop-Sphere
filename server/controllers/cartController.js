@@ -91,9 +91,26 @@ const removeFromCart = async (req, res) => {
     res.status(500).json({ error: 'Failed to remove item from cart' });
   }
 };
+// Clear all items from cart for a session
+const clearCart = async (req, res) => {
+  try {
+    const { session_id } = req.query;
+    if (!session_id) {
+      return res.status(400).json({ error: 'Session ID is required' });
+    }
+    await pool.query('DELETE FROM cart_items WHERE session_id = $1', [
+      session_id,
+    ]);
+    res.json({ message: 'Cart cleared' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to clear cart' });
+  }
+};
+
 module.exports = {
   getCart,
   addToCart,
   updateCartItem,
   removeFromCart,
+  clearCart,
 };
