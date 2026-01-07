@@ -119,8 +119,17 @@ function CartPage() {
         <div className="lg:col-span-2">
           {cartItems.map((item) => (
             <div key={item.id} className="flex gap-4 border-b py-4">
-              <div className="w-24 h-24 bg-gray-100 rounded flex-shrink-0 flex items-center justify-center">
-                <span className="text-gray-400 text-xs">No Image</span>
+              <div className="w-24 h-24 bg-gray-100 rounded flex-shrink-0 flex items-center justify-center overflow-hidden">
+                {item.image_url ? (
+                  <img
+                    src={item.image_url}
+                    alt={item.name}
+                    className="object-cover w-full h-full"
+                    onError={e => { e.target.onerror = null; e.target.style.display = 'none'; }}
+                  />
+                ) : (
+                  <span className="text-gray-400 text-xs">No Image</span>
+                )}
               </div>
 
               <div className="flex-grow">

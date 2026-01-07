@@ -83,8 +83,17 @@ function ProductDetailPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Image */}
-        <div className="aspect-square rounded-lg bg-gray-100 flex items-center justify-center">
-          <span className="text-gray-400">No Image Available</span>
+        <div className="aspect-square rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden">
+          {product.image_url ? (
+            <img
+              src={product.image_url}
+              alt={product.name}
+              className="object-cover w-full h-full"
+              onError={e => { e.target.onerror = null; e.target.style.display = 'none'; }}
+            />
+          ) : (
+            <span className="text-gray-400">No Image Available</span>
+          )}
         </div>
 
         {/* Product Info */}

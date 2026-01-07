@@ -4,9 +4,18 @@ function ProductCard({ product }) {
   return (
     <Link to={`/products/${product.id}`} className="group cursor-pointer">
       <div className="aspect-square w-full rounded-lg bg-gray-200 overflow-hidden">
-        <div className="h-full w-full flex items-center justify-center bg-gray-100">
-          <span className="text-gray-400 text-sm">No Image Available</span>
-        </div>
+        {product.image_url ? (
+          <img
+            src={product.image_url}
+            alt={product.name}
+            className="object-cover w-full h-full"
+            onError={e => { e.target.onerror = null; e.target.style.display = 'none'; }}
+          />
+        ) : (
+          <div className="h-full w-full flex items-center justify-center bg-gray-100">
+            <span className="text-gray-400 text-sm">No Image Available</span>
+          </div>
+        )}
       </div>
       <div className="mt-4">
         <h3 className="text-sm font-medium text-gray-900">{product.name}</h3>
