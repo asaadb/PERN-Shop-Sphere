@@ -79,4 +79,22 @@ describe('Products API', () => {
     expect(resUpdate.body.stock_quantity).toBe(updatedProduct.stock_quantity);
     expect(resUpdate.body.image_url).toBe(updatedProduct.image_url);
   });
+
+  it('should delete a product', async () => {
+    // First, create a product to delete
+    const createRes = await request(app).post('/api/products').send({
+      name: 'Delete Me',
+      description: 'To be deleted',
+      price: 10,
+      category_id: 1,
+      stock_quantity: 1,
+      image_url: 'test.jpg',
+    });
+    const productId = createRes.body.id;
+
+    const deleteRes = await request(app).delete(`/api/products/${productId}`);
+    expect(deleteRes.status).toBe(200);
+    const getRes = await request(app).get(`/api/products/${productId}`);
+    expect(getRes.status).toBe(404);
+  });
 });
