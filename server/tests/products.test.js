@@ -23,12 +23,12 @@ describe('Products API', () => {
 
   it('should create a new product', async () => {
     const newProduct = {
-      name: 'Test Product',
+      name: 'Testing a product creation',
       description: 'A product for testing',
       price: 15.91,
       category_id: 1,
       stock_quantity: 10,
-      image_url: 'http://image.jpg',
+      image_url: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308',
     };
 
     const res = await request(app).post('/api/products').send(newProduct);
@@ -51,7 +51,7 @@ describe('Products API', () => {
       price: 100.0,
       category_id: 1,
       stock_quantity: 5,
-      image_url: 'http://image/original.jpg',
+      image_url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
     };
 
     const res = await request(app).post('/api/products').send(newProduct);
@@ -60,12 +60,12 @@ describe('Products API', () => {
 
     // update the product
     const updatedProduct = {
-      name: 'Updated Product',
+      name: 'Updated Product name',
       description: 'Updated description',
       price: 50.28,
       category_id: 1,
       stock_quantity: 10,
-      image_url: 'http://image/updated.jpg',
+      image_url: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca',
     };
 
     const resUpdate = await request(app)
@@ -83,12 +83,12 @@ describe('Products API', () => {
   it('should delete a product', async () => {
     // First, create a product to delete
     const createRes = await request(app).post('/api/products').send({
-      name: 'Delete Me',
-      description: 'To be deleted',
+      name: 'Test Delection Product',
+      description: 'Testing product deletion',
       price: 10,
       category_id: 1,
       stock_quantity: 1,
-      image_url: 'test.jpg',
+      image_url: 'https://images.unsplash.com/photo-1519985176271-adb1088fa94c',
     });
     const productId = createRes.body.id;
 

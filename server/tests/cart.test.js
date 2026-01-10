@@ -10,17 +10,18 @@ describe('Cart API', () => {
     // Create a product to use in cart tests
     const newProduct = {
       name: 'Cart Test Product',
-      description: 'A product for cart testing',
+      description: 'a product for cart testing',
       price: 20.5,
       category_id: 1,
       stock_quantity: 10,
-      image_url: 'http://image.jpg',
+      image_url:
+        'https://plus.unsplash.com/premium_photo-1679513691474-73102089c117?q=80&w=813&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     };
     const res = await request(app).post('/api/products').send(newProduct);
     productId = res.body.id;
   });
 
-  it('should add an item to the cart', async () => {
+  it('should add item to the cart', async () => {
     const res = await request(app).post('/api/cart').send({
       session_id: sessionId,
       product_id: productId,
@@ -33,7 +34,7 @@ describe('Cart API', () => {
     cartItemId = res.body.id;
   });
 
-  it('should fetch the cart for a session', async () => {
+  it('should fetch the cart for a particular session', async () => {
     const res = await request(app).get(`/api/cart?session_id=${sessionId}`);
     expect(res.statusCode).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
@@ -55,7 +56,7 @@ describe('Cart API', () => {
     expect(res.body).toHaveProperty('message');
   });
 
-  it('should clear the cart for a session', async () => {
+  it('should clear the cart for a particular session', async () => {
     // Add an item again
     const addRes = await request(app).post('/api/cart').send({
       session_id: sessionId,
