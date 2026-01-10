@@ -39,7 +39,7 @@ PERN Shop Sphere is a full-stack e-commerce web application built with PostgreSQ
 
 1. Clone the repository:
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/asaadb/PERN-Shop-Sphere.git
    cd PERN-shop-sphere
    ```
 2. Install backend dependencies:
