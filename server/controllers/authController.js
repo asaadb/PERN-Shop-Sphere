@@ -1,5 +1,6 @@
 const pool = require("../db");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 // Register a new user
 async function registerUser(req, res) {
@@ -30,7 +31,15 @@ async function registerUser(req, res) {
       [username, email, password_hash],
     );
     const newUser = result.rows[0];
-    res.status(201).json({ user: newUser });
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: newUser.id, username: newUser.username, email: newUser.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" },
+    );
+
+    res.status(201).json({ user: newUser, token });
   } catch (err) {
     console.error("Registration error:", err);
     res.status(500).json({ error: "Server error during registration." });
