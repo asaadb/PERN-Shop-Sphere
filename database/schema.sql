@@ -25,5 +25,17 @@ CREATE TABLE products (
   stock_quantity INTEGER DEFAULT 0,
   image_url VARCHAR(500),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Cart Items Table
+CREATE TABLE cart_items (
+  id SERIAL PRIMARY KEY,
+  product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+  quantity INTEGER NOT NULL DEFAULT 1 CHECK (quantity > 0),
+  session_id VARCHAR(255),
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX idx_cart_session ON cart_items(session_id);
