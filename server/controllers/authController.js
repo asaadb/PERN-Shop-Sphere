@@ -46,4 +46,40 @@ async function registerUser(req, res) {
   }
 }
 
-module.exports = { registerUser };
+//Login user
+async function loginUser(req, res) {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: "Email and password are required." });
+  }
+  try {
+    // Check if user exists
+    const userResult = await pool.query(
+      "SELECT * FROM users WHERE email = $1",
+      [email],
+    );
+    if (userResult.rows.length === 0) {
+      return res.status(401).json({ error: "Invalid email or password." });
+    }
+    const user = userResult.rows[0];
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password_hash);
+    if (!isMatch) {
+      return res.status(401).json({ error: "Invalid email or password." });
+    }
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user.id, username: user.username, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" },
+    );
+
+    const { password_hash, ...userInfo } = user;
+    res.json({ user: userInfo, token });
+  } catch (err) {
+    console.error("Login error:", err);
+    return res.status(500).json({ error: "Server error during login." });
+  }
+}
+module.exports = { registerUser, loginUser };
