@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const {
   getCart,
@@ -6,17 +6,22 @@ const {
   updateCartItem,
   removeFromCart,
   clearCart,
-} = require('../controllers/cartController');
+  mergeCart,
+} = require("../controllers/cartController");
+const authMiddleware = require("../middleware/authMiddleware");
 
-router.get('/', getCart);
+router.get("/", getCart);
 
-router.post('/', addToCart);
+router.post("/", addToCart);
 
-router.put('/:id', updateCartItem);
+router.put("/:id", updateCartItem);
 
 // Clear all items for a session
-router.delete('/', clearCart);
+router.delete("/", clearCart);
 // Remove single item
-router.delete('/:id', removeFromCart);
+router.delete("/:id", removeFromCart);
+
+// Merge guest cart into user cart
+router.post("/merge", authMiddleware, mergeCart);
 
 module.exports = router;
