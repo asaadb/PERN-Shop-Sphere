@@ -38,8 +38,13 @@ async function registerUser(req, res) {
       process.env.JWT_SECRET,
       { expiresIn: "1h" },
     );
-
-    res.status(201).json({ user: newUser, token });
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 100,
+    });
+    res.status(201).json({ user: newUser });
   } catch (err) {
     console.error("Registration error:", err);
     res.status(500).json({ error: "Server error during registration." });
@@ -74,9 +79,14 @@ async function loginUser(req, res) {
       process.env.JWT_SECRET,
       { expiresIn: "1h" },
     );
-
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 1000,
+    });
     const { password_hash, ...userInfo } = user;
-    res.json({ user: userInfo, token });
+    res.json({ user: userInfo });
   } catch (err) {
     console.error("Login error:", err);
     return res.status(500).json({ error: "Server error during login." });
