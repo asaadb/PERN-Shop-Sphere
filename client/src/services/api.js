@@ -3,6 +3,7 @@ export const clearCart = async (sessionId) => {
   try {
     const response = await fetch(`${API_URL}/cart?session_id=${sessionId}`, {
       method: "DELETE",
+      credentials: "include",
     });
     if (!response.ok) {
       throw new Error("Failed to clear cart");
@@ -30,7 +31,9 @@ export const fetchProductById = async (id) => {
 
 // Cart API functions
 export const fetchCart = async (sessionId) => {
-  const response = await fetch(`${API_URL}/cart?session_id=${sessionId}`);
+  const response = await fetch(`${API_URL}/cart?session_id=${sessionId}`, {
+    credentials: "include",
+  });
   if (!response.ok) {
     throw new Error("Failed to fetch cart");
   }
@@ -44,6 +47,7 @@ export const addToCart = async (sessionId, productId, quantity) => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({
         session_id: sessionId,
         product_id: productId,
@@ -67,6 +71,7 @@ export const updateCartItem = async (itemId, quantity) => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({ quantity }),
     });
     if (!response.ok) {
@@ -83,6 +88,7 @@ export const removeFromCart = async (itemId) => {
   try {
     const response = await fetch(`${API_URL}/cart/${itemId}`, {
       method: "DELETE",
+      credentials: "include",
     });
     if (!response.ok) {
       throw new Error("Failed to remove from cart");
@@ -102,6 +108,7 @@ export const registerUser = async (userData) => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify(userData),
     });
     if (!response.ok) {
@@ -111,6 +118,28 @@ export const registerUser = async (userData) => {
     return await response.json();
   } catch (error) {
     console.error("Error registering user:", error);
+    throw error;
+  }
+};
+
+// User login API function
+export const loginUser = async (credentials) => {
+  try {
+    const response = await fetch(`${API_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(credentials),
+    });
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || "Failed to login user");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error logging in user:", error);
     throw error;
   }
 };
