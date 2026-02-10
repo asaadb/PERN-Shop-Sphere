@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { registerUser } from "../services/api";
+import { Link } from "react-router-dom";
 
 export default function RegisterPage() {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
@@ -97,12 +98,11 @@ export default function RegisterPage() {
             </button>
           </div>
         </form>
-
         <p className="mt-10 text-center text-sm font-medium text-gray-500">
           Already have an account?{' '}
-          <a href="/login" className="font-semibold underline underline-offset-2 text-blue-600 hover:text-blue-800 transition-colors">
+          <Link to="/login" className="font-semibold underline underline-offset-2 text-blue-600 hover:text-blue-800 transition-colors">
             Sign in
-          </a>
+          </Link>
         </p>
       </div>
     </div>
