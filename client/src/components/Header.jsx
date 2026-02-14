@@ -1,14 +1,27 @@
-import { Link } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
+import { Link, useNavigate } from 'react-router-dom';
+import { useCart } from '../contexts/CartContext';
 import React from 'react';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import { useAuth } from '../contexts/AuthContext';
 
 function Header() {
   const { cartCount } = useCart();
+  const { isLoggedIn, setUser, user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+      setUser(null);
+      navigate('/login');
+    } catch (err) {
+      alert("Logout failed: " + err.message);
+    }
+  };
 
   return (
     <nav className="bg-white shadow">
       <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-        {/* Logo/Title */}
         <Link
           to="/"
           className="text-2xl font-bold text-gray-800 hover:text-blue-600 transition-colors"
@@ -36,6 +49,50 @@ function Header() {
             </span>
           )}
         </Link>
+        {/* Profile Dropdown */}
+        <Menu as="div" className="relative ml-3">
+          <MenuButton className="flex items-center gap-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <span className="font-medium text-gray-700">{isLoggedIn ? `Hello ${user.username}` : "Guest"}</span>
+          </MenuButton>
+          <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline outline-black/5">
+          {isLoggedIn ? (
+            <MenuItem>
+              {() => (
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700"
+                >
+                  Sign out
+                </button>
+              )}
+            </MenuItem>
+          ) : (
+            <>
+            <MenuItem>
+              {() => (
+                <button
+                  onClick={() => navigate('/login')}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700"
+                >
+                  Sign in
+                </button>
+              )}
+            </MenuItem>
+            <MenuItem>
+              {() => (
+                <button
+                  onClick={() => navigate('/register')}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700"
+                >
+                  Register
+                </button>
+              )}
+            </MenuItem>
+            </>
+          )}
+            
+          </MenuItems>
+        </Menu>
       </div>
     </nav>
   );

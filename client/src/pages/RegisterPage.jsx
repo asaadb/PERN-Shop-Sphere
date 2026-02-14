@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { registerUser } from "../services/api";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext"
 
 export default function RegisterPage() {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -16,9 +19,11 @@ export default function RegisterPage() {
     setError("");
     setSuccess("");
     try {
-      await registerUser(form);
-      setSuccess("Registration successful! You can now sign in.");
-      setForm({ username: "", email: "", password: "" });
+      const data =await registerUser(form);
+      if (data.user) {
+        setUser(data.user);
+        navigate("/");
+      }
     } catch (err) {
       setError(err.message);
     }

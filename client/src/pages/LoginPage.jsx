@@ -2,6 +2,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { loginUser } from "../services/api";
+import { useAuth} from '../contexts/AuthContext';
 
 
 export default function LoginPage() {
@@ -9,6 +10,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { setUser } = useAuth();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -21,6 +23,7 @@ export default function LoginPage() {
     try {
       const data = await loginUser(form);
       if (data.user) {
+        setUser(data.user)
         navigate("/");
       }
       setForm({ email: "", password: "" });

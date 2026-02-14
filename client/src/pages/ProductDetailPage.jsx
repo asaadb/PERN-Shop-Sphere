@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchProductById, addToCart } from '../services/api';
-import { useCart } from '../context/CartContext';
+import { useCart } from '../contexts/CartContext';
 
 function ProductDetailPage() {
   const { id } = useParams();
