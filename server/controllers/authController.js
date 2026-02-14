@@ -92,4 +92,15 @@ async function loginUser(req, res) {
     return res.status(500).json({ error: "Server error during login." });
   }
 }
-module.exports = { registerUser, loginUser };
+
+// Logout user by clearing the token cookie
+function logoutUser(req, res) {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
+  res.json({ message: "Logged out successfully" });
+}
+
+module.exports = { registerUser, loginUser, logoutUser };
